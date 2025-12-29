@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next';
 import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -30,6 +31,7 @@ const RootLayout = ({ children }: Readonly<PropsWithChildren>) => {
               {children}
             </JotaiProvider>
           </ConvexClientProvider>
+          <Analytics />
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
