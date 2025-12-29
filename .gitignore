@@ -4,7 +4,6 @@ node_modules
 node_modules/
 **/node_modules/
 bun.lockb
-package-lock.json
 .next
 dist
 .turbo
