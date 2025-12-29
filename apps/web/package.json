@@ -71,9 +71,13 @@
     }
   ],
   "dependencies": {
-    "@kiiaren/shared": "file:../../packages/shared",
     "@auth/core": "^0.34.2",
+    "@blocknote/core": "^0.45.0",
+    "@blocknote/mantine": "^0.45.0",
+    "@blocknote/react": "^0.45.0",
     "@convex-dev/auth": "^0.0.65",
+    "@excalidraw/excalidraw": "^0.18.0",
+    "@kiiaren/shared": "file:../../packages/shared",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -103,7 +107,8 @@
     "react-verification-input": "^4.1.2",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.6"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.1",

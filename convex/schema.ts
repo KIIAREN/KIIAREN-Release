@@ -51,6 +51,33 @@ const schema = defineSchema({
     .index('by_workspace_id', ['workspaceId'])
     .index('by_message_id', ['messageId'])
     .index('by_member_id', ['memberId']),
+  docs: defineTable({
+    title: v.string(),
+    workspaceId: v.id('workspaces'),
+    parentDocumentId: v.optional(v.id('docs')),
+    content: v.optional(v.string()),
+    coverImage: v.optional(v.id('_storage')),
+    icon: v.optional(v.string()),
+    isArchived: v.boolean(),
+    isPublished: v.boolean(),
+    createdBy: v.id('users'),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_workspace_id', ['workspaceId'])
+    .index('by_workspace_id_parent', ['workspaceId', 'parentDocumentId'])
+    .index('by_created_by', ['createdBy']),
+  boards: defineTable({
+    title: v.string(),
+    workspaceId: v.id('workspaces'),
+    excalidrawData: v.optional(v.string()),
+    thumbnail: v.optional(v.id('_storage')),
+    createdBy: v.id('users'),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_workspace_id', ['workspaceId'])
+    .index('by_created_by', ['createdBy']),
 });
 
 export default schema;

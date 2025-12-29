@@ -25,14 +25,16 @@ interface SidebarItemProps {
   icon: LucideIcon | IconType;
   label: Id<'channels'> | string;
   variant?: VariantProps<typeof sidebarItemVariants>['variant'];
+  href?: string;
 }
 
-export const SidebarItem = ({ id, icon: Icon, label, variant }: SidebarItemProps) => {
+export const SidebarItem = ({ id, icon: Icon, label, variant, href }: SidebarItemProps) => {
   const workspaceId = useWorkspaceId();
+  const link = href || `/workspace/${workspaceId}/channel/${id}`;
 
   return (
     <Button variant="transparent" size="sm" className={cn(sidebarItemVariants({ variant }))} asChild>
-      <Link href={`/workspace/${workspaceId}/channel/${id}`}>
+      <Link href={link}>
         <Icon className="mr-1 size-3.5 shrink-0" />
         <span className="truncate text-sm">{label}</span>
       </Link>

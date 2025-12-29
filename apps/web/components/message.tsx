@@ -11,7 +11,7 @@ import { useConfirm } from '@/hooks/use-confirm';
 import { usePanel } from '@/hooks/use-panel';
 import { cn } from '@/lib/utils';
 
-import type { Doc, Id } from '../../convex/_generated/dataModel';
+import type { Doc, Id } from '@/../convex/_generated/dataModel';
 import { Hint } from './hint';
 import { Reactions } from './reactions';
 import { ThreadBar } from './thread-bar';

@@ -48,9 +48,11 @@ npm install
 
 ### Environment Setup
 
-1. Copy `.env.example` to `.env.local` in the project root
+1. Copy `.env.example` to `.env` in the project root
 2. Fill in your Convex deployment details
 3. Set up OAuth credentials (Google, GitHub) if needed
+
+**Note:** All apps use a single `.env` file at the monorepo root. See `ENV_MAPPING.md` for detailed variable documentation.
 
 ### Development
 
@@ -131,12 +133,16 @@ Comprehensive role-based access control is already implemented:
 
 ## Environment Variables
 
+**Single `.env` file** at monorepo root controls all apps (web, convex, docs, whiteboard).
+
 See `.env.example` for required environment variables:
 - `CONVEX_DEPLOYMENT` - Your Convex deployment (from dashboard)
 - `NEXT_PUBLIC_CONVEX_URL` - Public Convex URL
 - `AUTH_GOOGLE_CLIENT_ID` / `AUTH_GOOGLE_CLIENT_SECRET` - Google OAuth (optional)
 - `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` - GitHub OAuth (optional)
 - `SITE_URL` - Application URL (for auth callbacks)
+
+For detailed variable mapping and validation, see `ENV_MAPPING.md`.
 
 ## License
 

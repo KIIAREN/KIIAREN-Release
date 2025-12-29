@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, HashIcon, Loader, MessageSquareText, SendHorizonal } from 'lucide-react';
+import { AlertTriangle, FileText, HashIcon, Loader, MessageSquareText, Presentation, SendHorizonal } from 'lucide-react';
 
 import { useGetChannels } from '@/features/channels/api/use-get-channels';
 import { useCreateChannelModal } from '@/features/channels/store/use-create-channel-modal';
@@ -53,6 +53,12 @@ export const WorkspaceSidebar = () => {
         <SidebarItem label="Threads" icon={MessageSquareText} id="threads" />
 
         <SidebarItem label="Drafts & Sent" icon={SendHorizonal} id="draft" />
+      </div>
+
+      <div className="mt-3 flex flex-col px-2">
+        <SidebarItem label="Documents" icon={FileText} id="docs" variant="default" href={`/workspace/${workspaceId}/docs`} />
+
+        <SidebarItem label="Whiteboards" icon={Presentation} id="whiteboard" variant="default" href={`/workspace/${workspaceId}/whiteboard`} />
       </div>
 
       {channels && channels.length !== 0 && (
