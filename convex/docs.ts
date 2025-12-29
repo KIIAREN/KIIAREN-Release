@@ -6,7 +6,7 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import type { Id } from './_generated/dataModel';
-import { requireAuth, requireWorkspaceMember } from './lib/access-control';
+import { requireAuth, requireWorkspaceMember } from './lib/access_control';
 
 /**
  * List all documents in a workspace (non-archived, top-level only)

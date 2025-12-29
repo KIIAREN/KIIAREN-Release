@@ -13,7 +13,8 @@
     "lint:fix": "npm run lint:fix --workspaces --if-present",
     "format": "npm run format --workspaces --if-present",
     "format:fix": "npm run format:fix --workspaces --if-present",
-    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules"
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "convex:dev": "convex dev"
   },
   "devDependencies": {
     "convex": "^1.31.2",

@@ -5,7 +5,7 @@
 
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
-import { requireAuth, requireWorkspaceMember } from './lib/access-control';
+import { requireAuth, requireWorkspaceMember } from './lib/access_control';
 
 /**
  * List all boards in a workspace

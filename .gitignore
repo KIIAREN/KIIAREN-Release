@@ -8,3 +8,5 @@ package-lock.json
 .next
 dist
 .turbo
+
+.env.local
