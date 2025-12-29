@@ -166,7 +166,9 @@ export const archive = mutation({
     const archiveChildren = async (parentId: Id<'docs'>) => {
       const children = await ctx.db
         .query('docs')
-        .withIndex('by_workspace_id_parent', (q) => q.eq('workspaceId', doc.workspaceId).eq('parentDocumentId', parentId))
+        .withIndex('by_workspace_id_parent', (q) =>
+          q.eq('workspaceId', doc.workspaceId).eq('parentDocumentId', parentId as Id<'docs'>),
+        )
         .collect();
 
       for (const child of children) {
@@ -174,7 +176,7 @@ export const archive = mutation({
           isArchived: true,
           updatedAt: Date.now(),
         });
-        await archiveChildren(child._id);
+        await archiveChildren(child._id as Id<'docs'>);
       }
     };
 
@@ -242,11 +244,13 @@ export const remove = mutation({
     const deleteChildren = async (parentId: Id<'docs'>) => {
       const children = await ctx.db
         .query('docs')
-        .withIndex('by_workspace_id_parent', (q) => q.eq('workspaceId', doc.workspaceId).eq('parentDocumentId', parentId))
+        .withIndex('by_workspace_id_parent', (q) =>
+          q.eq('workspaceId', doc.workspaceId).eq('parentDocumentId', parentId as Id<'docs'>),
+        )
         .collect();
 
       for (const child of children) {
-        await deleteChildren(child._id);
+        await deleteChildren(child._id as Id<'docs'>);
         await ctx.db.delete(child._id);
       }
     };
