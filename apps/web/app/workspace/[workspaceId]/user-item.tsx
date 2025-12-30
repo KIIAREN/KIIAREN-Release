@@ -11,7 +11,7 @@ const userItemVariants = cva('flex items-center gap-1.5 justify-start font-norma
   variants: {
     variant: {
       default: 'text-muted-foreground',
-      active: 'text-foreground bg-white/90 hover:bg-white/90',
+      active: 'text-foreground bg-accent hover:bg-accent',
     },
   },
   defaultVariants: {

@@ -77,11 +77,11 @@
 
 .ql-toolbar {
   border: none !important;
-  background-color: #fafafa !important;
+  background-color: hsl(var(--muted)) !important;
 }
 
 .ql-toolbar .ql-formats:not(:last-child) {
-  border-right: 1px solid #e0e0e0 !important;
+  border-right: 1px solid hsl(var(--border)) !important;
   padding-right: 12px !important;
 }
 
@@ -94,14 +94,14 @@
 .ql-editor {
   line-height: 22px !important;
   padding: 8px 12px !important;
-  color: #1d1c1d !important;
+  color: hsl(var(--foreground)) !important;
   font-weight: 400 !important;
   font-family: 'Lato', sans-serif !important;
   font-size: 14px !important;
 }
 
 .ql-editor a {
-  color: #404040 !important;
+  color: hsl(var(--primary)) !important;
 }
 
 .ql-editor a:hover {
@@ -111,7 +111,7 @@
 .ql-editor:before {
   left: 12px !important;
   font-family: 'Lato', sans-serif !important;
-  color: #8d8d8d !important;
+  color: hsl(var(--muted-foreground)) !important;
   font-style: normal !important;
   font-size: 14px !important;
   font-weight: 400 !important;
@@ -123,9 +123,22 @@
   @apply !p-0;
 }
 
+/* Quill toolbar icons - invert for dark mode */
+.dark .ql-toolbar .ql-stroke {
+  stroke: hsl(var(--foreground)) !important;
+}
+
+.dark .ql-toolbar .ql-fill {
+  fill: hsl(var(--foreground)) !important;
+}
+
+.dark .ql-toolbar .ql-picker-label {
+  color: hsl(var(--foreground)) !important;
+}
+
 @layer utilities {
   .messages-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #e0e0e0 #fafafa;
+    scrollbar-color: hsl(var(--border)) hsl(var(--muted));
   }
 }
