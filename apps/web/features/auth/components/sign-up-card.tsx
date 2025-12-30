@@ -26,7 +26,11 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
 
   const handleOAuthSignUp = (value: 'github' | 'google') => {
     setPending(true);
-    signIn(value).finally(() => setPending(false));
+    const redirectTo = window.location.hostname.includes('kiiaren.com')
+      ? 'https://dashboard.kiiaren.com'
+      : '/workspace';
+
+    signIn(value, { redirectTo }).finally(() => setPending(false));
   };
 
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
