@@ -13,14 +13,10 @@ export default convexAuthNextjsMiddleware((req) => {
   const url = req.nextUrl;
 
   // ---- account.kiiaren.com ----
-  // NOTE: Requires 'apps/web/app/account' directory to exist
+  // Redirect to auth.kiiaren.com for unified authentication
+  // This ensures all OAuth callbacks stay within auth.kiiaren.com domain
   if (host === 'account.kiiaren.com') {
-    if (!url.pathname.startsWith('/account')) {
-      url.pathname = `/account${url.pathname}`;
-    }
-    // Account subdomain IS the auth page, so it must be public
-    // If user is already authenticated, client-side code will redirect to dashboard
-    return NextResponse.rewrite(url);
+    return NextResponse.redirect(new URL('https://auth.kiiaren.com'));
   }
 
   // ---- dashboard.kiiaren.com ----
@@ -40,16 +36,21 @@ export default convexAuthNextjsMiddleware((req) => {
   }
 
   // ---- auth.kiiaren.com ----
-  // Handles Convex Auth callbacks and OAuth success redirect
-  // /api/auth/* -> stays as-is (handled by Next.js API route)
-  // /oauth-success -> stays as-is (Next.js page)
-  // Everything else -> redirect to main site
+  // Unified authentication domain serving both UI and OAuth callbacks
+  // Root (/) -> serves login page from /account
+  // /api/auth/* -> OAuth callback endpoints (Next.js API route)
+  // /oauth-success -> post-OAuth redirect page
   if (host === 'auth.kiiaren.com') {
-    // Allow /api/auth/* and /oauth-success to pass through
+    // Root path serves the login UI
+    if (url.pathname === '/') {
+      url.pathname = '/account';
+      return NextResponse.rewrite(url);
+    }
+    // OAuth endpoints pass through unchanged
     if (url.pathname.startsWith('/api/auth') || url.pathname === '/oauth-success') {
       return NextResponse.rewrite(url);
     }
-    // Anything else on auth subdomain should redirect to main site (MUST be absolute URL to avoid redirect loop)
+    // Anything else redirects to main site
     return NextResponse.redirect(new URL('https://kiiaren.com'));
   }
 
