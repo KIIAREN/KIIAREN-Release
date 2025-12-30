@@ -13,10 +13,28 @@ export default convexAuthNextjsMiddleware((req) => {
   const url = req.nextUrl;
 
   // ---- account.kiiaren.com ----
-  // Redirect to auth.kiiaren.com for unified authentication
-  // This ensures all OAuth callbacks stay within auth.kiiaren.com domain
+  // Redirect old singular domain to new plural domain
   if (host === 'account.kiiaren.com') {
-    return NextResponse.redirect(new URL('https://auth.kiiaren.com'));
+    return NextResponse.redirect(new URL('https://accounts.kiiaren.com'));
+  }
+
+  // ---- accounts.kiiaren.com ----
+  // Unified authentication domain serving both UI and OAuth callbacks
+  // Root (/) -> serves login page from /account
+  // /api/auth/* -> OAuth callback endpoints
+  // /oauth-success -> post-OAuth redirect page
+  if (host === 'accounts.kiiaren.com') {
+    // Root path serves the login UI
+    if (url.pathname === '/') {
+      url.pathname = '/account';
+      return NextResponse.rewrite(url);
+    }
+    // OAuth endpoints pass through unchanged
+    if (url.pathname.startsWith('/api/auth') || url.pathname === '/oauth-success') {
+      return NextResponse.rewrite(url);
+    }
+    // Anything else redirects to main site
+    return NextResponse.redirect(new URL('https://kiiaren.com'));
   }
 
   // ---- dashboard.kiiaren.com ----
@@ -33,25 +51,6 @@ export default convexAuthNextjsMiddleware((req) => {
       return nextjsMiddlewareRedirect(req, '/auth');
     }
     return NextResponse.rewrite(url);
-  }
-
-  // ---- auth.kiiaren.com ----
-  // Unified authentication domain serving both UI and OAuth callbacks
-  // Root (/) -> serves login page from /account
-  // /api/auth/* -> OAuth callback endpoints (Next.js API route)
-  // /oauth-success -> post-OAuth redirect page
-  if (host === 'auth.kiiaren.com') {
-    // Root path serves the login UI
-    if (url.pathname === '/') {
-      url.pathname = '/account';
-      return NextResponse.rewrite(url);
-    }
-    // OAuth endpoints pass through unchanged
-    if (url.pathname.startsWith('/api/auth') || url.pathname === '/oauth-success') {
-      return NextResponse.rewrite(url);
-    }
-    // Anything else redirects to main site
-    return NextResponse.redirect(new URL('https://kiiaren.com'));
   }
 
   // ---- api.kiiaren.com ----
