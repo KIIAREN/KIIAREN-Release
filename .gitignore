@@ -1,13 +1,45 @@
-node_modules
-
 # Dependencies
 node_modules/
 **/node_modules/
-bun.lockb
-.next
-dist
-.turbo
 
-.env.local
+# Environment Files
 .env
+.env.local
 .env*.local
+!.env.example
+
+# Build outputs
+.next/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# Lock files (keep package-lock.json, ignore bun)
+bun.lockb
+*.lock
+!package-lock.json
+
+# IDE and Editor folders
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Misc
+.vercel
+.convex/
