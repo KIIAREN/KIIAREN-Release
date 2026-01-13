@@ -15,8 +15,12 @@
 export {
   useGetWorkspaces,
   useGetWorkspace,
+  useGetWorkspaceInfo,
   useCreateWorkspace,
   useJoinWorkspace,
+  useUpdateWorkspace,
+  useRemoveWorkspace,
+  useNewJoinCode,
 } from './use-workspaces';
 
 // Channel hooks

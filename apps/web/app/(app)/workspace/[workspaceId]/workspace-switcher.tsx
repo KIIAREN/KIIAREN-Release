@@ -11,8 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
-import { useGetWorkspaces } from '@/features/workspaces/api/use-get-workspaces';
+import { useGetWorkspace, useGetWorkspaces } from '@/lib/backend';
 import { useCreateWorkspaceModal } from '@/features/workspaces/store/use-create-workspace-modal';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
@@ -22,9 +21,9 @@ export const WorkspaceSwitcher = () => {
   const [_open, setOpen] = useCreateWorkspaceModal();
 
   const { data: workspaces, isLoading: workspacesLoading } = useGetWorkspaces();
-  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({ id: workspaceId });
+  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace(workspaceId);
 
-  const filteredWorkspaces = workspaces?.filter((workspace) => workspace?._id !== workspaceId);
+  const filteredWorkspaces = workspaces?.filter((workspace) => workspace?.id !== workspaceId);
 
   return (
     <DropdownMenu>
@@ -46,9 +45,9 @@ export const WorkspaceSwitcher = () => {
 
         {filteredWorkspaces?.map((workspace) => (
           <DropdownMenuItem
-            key={workspace._id}
+            key={workspace.id}
             className="cursor-pointer overflow-hidden capitalize"
-            onClick={() => router.push(`/workspace/${workspace._id}`)}
+            onClick={() => router.push(`/workspace/${workspace.id}`)}
           >
             <div className="relative mr-2 flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-secondary text-xl font-semibold text-white">
               {workspace.name.charAt(0).toUpperCase()}

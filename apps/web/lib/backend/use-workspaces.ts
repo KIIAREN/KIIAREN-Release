@@ -126,6 +126,28 @@ export function useCreateWorkspace() {
 }
 
 /**
+ * Get workspace info (name and membership status).
+ *
+ * Returns basic workspace information and whether the current user is a member.
+ * Used for join page validation.
+ */
+export function useGetWorkspaceInfo(id: Id<'workspaces'>) {
+  const providerId = useProviderId();
+
+  if (providerId !== 'convex') {
+    throw new Error(
+      `[${providerId}] workspaces.getInfoById is not implemented. ` +
+        `See docs/EDITIONING.md for self-host status.`
+    );
+  }
+
+  const data = useQuery(api.workspaces.getInfoById, { id });
+  const isLoading = data === undefined;
+
+  return { data, isLoading };
+}
+
+/**
  * Join a workspace.
  *
  * Supports:
@@ -136,7 +158,14 @@ export function useCreateWorkspace() {
 export function useJoinWorkspace() {
   const providerId = useProviderId();
   const mutation = useMutation(api.workspaces.join);
-  const [isPending, setIsPending] = useState(false);
+  const [data, setData] = useState<Id<'workspaces'> | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [status, setStatus] = useState<'success' | 'error' | 'settled' | 'pending' | null>(null);
+
+  const isPending = useMemo(() => status === 'pending', [status]);
+  const isSuccess = useMemo(() => status === 'success', [status]);
+  const isError = useMemo(() => status === 'error', [status]);
+  const isSettled = useMemo(() => status === 'settled', [status]);
 
   if (providerId !== 'convex') {
     throw new Error(
@@ -149,30 +178,221 @@ export function useJoinWorkspace() {
     async (
       args: {
         workspaceId: Id<'workspaces'>;
-        joinCode?: string;
-        inviteCode?: string;
+        joinCode: string;
       },
       options?: {
-        onSuccess?: (data: Id<'workspaces'>) => void;
+        onSuccess?: (data: Id<'workspaces'> | null) => void;
         onError?: (error: Error) => void;
         onSettled?: () => void;
+        throwError?: boolean;
       }
     ) => {
-      setIsPending(true);
       try {
+        setData(null);
+        setError(null);
+        setStatus('pending');
+
         const result = await mutation(args);
+        setData(result);
+        setStatus('success');
         options?.onSuccess?.(result);
         return result;
       } catch (error) {
+        setStatus('error');
+        setError(error as Error);
         options?.onError?.(error as Error);
-        throw error;
+
+        if (!options?.throwError) throw error;
       } finally {
-        setIsPending(false);
+        setStatus('settled');
         options?.onSettled?.();
       }
     },
     [mutation]
   );
 
-  return { mutate, isPending };
+  return { mutate, data, error, isPending, isSuccess, isError, isSettled };
+}
+
+/**
+ * Update a workspace.
+ *
+ * Allows workspace name updates (admin only).
+ */
+export function useUpdateWorkspace() {
+  const providerId = useProviderId();
+  const mutation = useMutation(api.workspaces.update);
+  const [data, setData] = useState<Id<'workspaces'> | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [status, setStatus] = useState<'success' | 'error' | 'settled' | 'pending' | null>(null);
+
+  const isPending = useMemo(() => status === 'pending', [status]);
+  const isSuccess = useMemo(() => status === 'success', [status]);
+  const isError = useMemo(() => status === 'error', [status]);
+  const isSettled = useMemo(() => status === 'settled', [status]);
+
+  if (providerId !== 'convex') {
+    throw new Error(
+      `[${providerId}] workspaces.update is not implemented. ` +
+        `See docs/EDITIONING.md for self-host status.`
+    );
+  }
+
+  const mutate = useCallback(
+    async (
+      values: { id: Id<'workspaces'>; name: string },
+      options?: {
+        onSuccess?: (data: Id<'workspaces'> | null) => void;
+        onError?: (error: Error) => void;
+        onSettled?: () => void;
+        throwError?: boolean;
+      }
+    ) => {
+      try {
+        setData(null);
+        setError(null);
+        setStatus('pending');
+
+        const result = await mutation(values);
+        setData(result);
+        setStatus('success');
+        options?.onSuccess?.(result);
+        return result;
+      } catch (error) {
+        setStatus('error');
+        setError(error as Error);
+        options?.onError?.(error as Error);
+
+        if (!options?.throwError) throw error;
+      } finally {
+        setStatus('settled');
+        options?.onSettled?.();
+      }
+    },
+    [mutation]
+  );
+
+  return { mutate, data, error, isPending, isSuccess, isError, isSettled };
+}
+
+/**
+ * Remove (delete) a workspace.
+ *
+ * Permanently deletes a workspace and all its data (admin only).
+ */
+export function useRemoveWorkspace() {
+  const providerId = useProviderId();
+  const mutation = useMutation(api.workspaces.remove);
+  const [data, setData] = useState<Id<'workspaces'> | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [status, setStatus] = useState<'success' | 'error' | 'settled' | 'pending' | null>(null);
+
+  const isPending = useMemo(() => status === 'pending', [status]);
+  const isSuccess = useMemo(() => status === 'success', [status]);
+  const isError = useMemo(() => status === 'error', [status]);
+  const isSettled = useMemo(() => status === 'settled', [status]);
+
+  if (providerId !== 'convex') {
+    throw new Error(
+      `[${providerId}] workspaces.remove is not implemented. ` +
+        `See docs/EDITIONING.md for self-host status.`
+    );
+  }
+
+  const mutate = useCallback(
+    async (
+      values: { id: Id<'workspaces'> },
+      options?: {
+        onSuccess?: (data: Id<'workspaces'> | null) => void;
+        onError?: (error: Error) => void;
+        onSettled?: () => void;
+        throwError?: boolean;
+      }
+    ) => {
+      try {
+        setData(null);
+        setError(null);
+        setStatus('pending');
+
+        const result = await mutation(values);
+        setData(result);
+        setStatus('success');
+        options?.onSuccess?.(result);
+        return result;
+      } catch (error) {
+        setStatus('error');
+        setError(error as Error);
+        options?.onError?.(error as Error);
+
+        if (!options?.throwError) throw error;
+      } finally {
+        setStatus('settled');
+        options?.onSettled?.();
+      }
+    },
+    [mutation]
+  );
+
+  return { mutate, data, error, isPending, isSuccess, isError, isSettled };
+}
+
+/**
+ * Generate a new join code for a workspace.
+ *
+ * Invalidates the old join code and creates a new one (admin only).
+ */
+export function useNewJoinCode() {
+  const providerId = useProviderId();
+  const mutation = useMutation(api.workspaces.newJoinCode);
+  const [data, setData] = useState<Id<'workspaces'> | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [status, setStatus] = useState<'success' | 'error' | 'settled' | 'pending' | null>(null);
+
+  const isPending = useMemo(() => status === 'pending', [status]);
+  const isSuccess = useMemo(() => status === 'success', [status]);
+  const isError = useMemo(() => status === 'error', [status]);
+  const isSettled = useMemo(() => status === 'settled', [status]);
+
+  if (providerId !== 'convex') {
+    throw new Error(
+      `[${providerId}] workspaces.newJoinCode is not implemented. ` +
+        `See docs/EDITIONING.md for self-host status.`
+    );
+  }
+
+  const mutate = useCallback(
+    async (
+      values: { workspaceId: Id<'workspaces'> },
+      options?: {
+        onSuccess?: (data: Id<'workspaces'> | null) => void;
+        onError?: (error: Error) => void;
+        onSettled?: () => void;
+        throwError?: boolean;
+      }
+    ) => {
+      try {
+        setData(null);
+        setError(null);
+        setStatus('pending');
+
+        const result = await mutation(values);
+        setData(result);
+        setStatus('success');
+        options?.onSuccess?.(result);
+        return result;
+      } catch (error) {
+        setStatus('error');
+        setError(error as Error);
+        options?.onError?.(error as Error);
+
+        if (!options?.throwError) throw error;
+      } finally {
+        setStatus('settled');
+        options?.onSettled?.();
+      }
+    },
+    [mutation]
+  );
+
+  return { mutate, data, error, isPending, isSuccess, isError, isSettled };
 }
