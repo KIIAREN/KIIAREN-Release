@@ -10,12 +10,8 @@ const AccountPage = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            if (window.location.hostname.includes('kiiaren.com')) {
-                window.location.href = 'https://dashboard.kiiaren.com';
-            } else {
-                // Localhost
-                window.location.href = '/workspace';
-            }
+            // Use relative path for all environments to work with middleware routing
+            window.location.href = '/workspace';
         }
     }, [isAuthenticated]);
 
