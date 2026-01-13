@@ -1,42 +1,8 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { useConvexAuth } from 'convex/react';
-import { Loader, Check, CheckCircle, Github, ArrowRight, Copy } from 'lucide-react';
-import { useState } from 'react';
+import { Check, CheckCircle, Github, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const LandingPage = () => {
-  const router = useRouter();
-  const { isLoading, isAuthenticated } = useConvexAuth();
-  const [copied, setCopied] = useState(false);
-
-  const handleStart = () => {
-    if (isLoading) return;
-
-    if (isAuthenticated) {
-      const isProd = window.location.hostname.includes('kiiaren.com');
-      if (isProd) {
-        window.location.href = 'https://dashboard.kiiaren.com';
-      } else {
-        router.push('/workspace');
-      }
-    } else {
-      const isProd = window.location.hostname.includes('kiiaren.com');
-      if (isProd) {
-        window.location.href = 'https://kiiaren.com/auth';
-      } else {
-        router.push('/auth');
-      }
-    }
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText('npm install kiiaren');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-300 font-sans antialiased">
       {/* Navigation */}
@@ -53,8 +19,8 @@ const LandingPage = () => {
               <span className="sr-only">GitHub</span>
               <Github className="h-5 w-5" />
             </a>
-            <Button onClick={handleStart} disabled={isLoading} className="text-xs font-mono font-bold uppercase tracking-wider">
-              {isLoading ? <Loader className="size-4 animate-spin" /> : 'Access Kernel'}
+            <Button asChild className="text-xs font-mono font-bold uppercase tracking-wider">
+              <Link href="/auth">Access Kernel</Link>
             </Button>
           </div>
         </div>
@@ -75,16 +41,19 @@ const LandingPage = () => {
             A sovereignty engine for modern teams. Built on strict domain-based ownership and cryptographic trust, devoid of social noise.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" onClick={handleStart} disabled={isLoading} className="w-full sm:w-auto px-8">
-              {isLoading ? <Loader className="size-5 animate-spin" /> : (isAuthenticated ? 'Open App' : 'Start Deployment')}
+            <Button size="lg" asChild className="w-full sm:w-auto px-8">
+              <Link href="/auth">Start Deployment</Link>
             </Button>
-            <button
-              onClick={handleCopy}
+            {/* TODO: Link to /docs when route exists */}
+            <a
+              href="https://github.com/KIIAREN/KIIAREN"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full sm:w-auto px-8 py-3 bg-transparent text-zinc-900 dark:text-white font-mono text-sm border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-500 transition-all flex items-center justify-center gap-2 rounded-md"
             >
-              <span>$ npm install kiiaren</span>
-              {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-            </button>
+              <span>View Documentation</span>
+              <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </header>
@@ -96,7 +65,7 @@ const LandingPage = () => {
             <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-6">Not a social network.<br />A private infrastructure.</h2>
             <div className="space-y-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
               <p>
-                Most "productivity" tools are social networks in disguise - prioritizing engagement over utility. KIIAREN is different. It is an infrastructure kernel designed exclusively for organizational throughput.
+                Most &quot;productivity&quot; tools are social networks in disguise - prioritizing engagement over utility. KIIAREN is different. It is an infrastructure kernel designed exclusively for organizational throughput.
               </p>
               <p>
                 We strip away the likes, the feeds, and the algorithmic distractions. What remains is a pure, domain-verified workspace where identity is strictly scoped to the organization.
@@ -138,7 +107,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-zinc-900 dark:text-white mb-4">Trust Topology</h2>
-            <p className="text-zinc-600 dark:text-zinc-400 font-mono text-sm">Identity && Access Management Flow</p>
+            <p className="text-zinc-600 dark:text-zinc-400 font-mono text-sm">Identity &amp;&amp; Access Management Flow</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="group relative p-8 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors rounded">
@@ -150,7 +119,7 @@ const LandingPage = () => {
               </div>
               <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">DNS Verification</h3>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Proof of ownership is established via TXT record. No email magic links. We trust the domain registrar as the root of truth.
+                Proof of ownership is established via TXT record. No email magic links. We trust the domain registrar as the root of truth. Workspace owners verify the domain once via a DNS TXT record. Members with @domain join without setup.
               </p>
               <div className="mt-4 p-2 bg-zinc-50 dark:bg-black font-mono text-xs text-green-600 dark:text-green-400 truncate rounded">
                 TXT kiiaren-verify=93f8a...
@@ -238,8 +207,8 @@ const LandingPage = () => {
                   </li>
                 ))}
               </ul>
-              <Button className="w-full" size="lg">
-                Contact Sales
+              <Button className="w-full" size="lg" asChild>
+                <a href="mailto:sales@kiiaren.com">Contact Sales</a>
               </Button>
             </div>
           </div>
@@ -302,8 +271,8 @@ const LandingPage = () => {
             <a className="px-5 py-2 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-sm rounded" href="https://github.com/KIIAREN/KIIAREN" target="_blank" rel="noopener noreferrer">
               Explore Docs
             </a>
-            <Button onClick={handleStart} disabled={isLoading}>
-              {isLoading ? <Loader className="size-4 animate-spin" /> : 'Join Waitlist'}
+            <Button asChild>
+              <Link href="/auth">Get Started</Link>
             </Button>
           </div>
         </div>
