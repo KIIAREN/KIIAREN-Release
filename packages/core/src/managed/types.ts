@@ -271,50 +271,111 @@ export type ExtensionEvent =
 // OSS Stub Factory
 // -----------------------------------------------------------------------------
 
+import { ManagedOnlyError } from '../errors';
+
 /**
  * Creates stub implementations for managed-only features in OSS.
- * All hooks are no-ops or throw with clear error messages.
+ *
+ * Behavior patterns:
+ * - Blocking operations: THROW with clear ManagedOnlyError
+ * - Emit operations: NO-OP (allows OSS kernel to function)
+ *
+ * THIS IS INTENTIONAL:
+ * - OSS should not silently fail on operations that require infrastructure
+ * - But OSS should gracefully degrade when emitting events to non-existent handlers
+ *
+ * @returns ExtensionHooks with OSS-appropriate implementations
  */
 export function createOSSStubs(): ExtensionHooks {
-  const managedOnlyError = (feature: string, operation: string): never => {
-    throw new Error(
-      `[KIIAREN] ${operation} requires managed tier. ` +
-        `Feature '${feature}' is not available in self-hosted deployments. ` +
-        `See https://kiiaren.io/docs/editioning for details.`
-    );
-  };
-
   return {
+    /**
+     * AUDIT HOOKS
+     * - log(): NO-OP - OSS can emit audit events, managed tier persists them
+     * - query(): THROWS - Audit query requires indexed storage (managed-only)
+     *
+     * This hook is managed-only and intentionally unavailable in OSS.
+     */
     audit: {
       log: async () => {
-        /* no-op in OSS */
+        // NO-OP: OSS emits audit events but they aren't persisted
+        // Managed tier intercepts these and stores them
       },
-      query: () => managedOnlyError('audit_logs', 'Audit log query'),
+      query: () => {
+        throw new ManagedOnlyError('audit_logs');
+      },
     },
+
+    /**
+     * SEARCH HOOKS
+     * - index(): NO-OP - OSS can emit index events, managed tier indexes them
+     * - search(): THROWS - Full-text search requires infrastructure (managed-only)
+     *
+     * This hook is managed-only and intentionally unavailable in OSS.
+     */
     search: {
       index: async () => {
-        /* no-op in OSS */
+        // NO-OP: OSS emits index events but they aren't processed
+        // Managed tier intercepts these and indexes documents
       },
-      search: () => managedOnlyError('indexed_search', 'Full-text search'),
+      search: () => {
+        throw new ManagedOnlyError('indexed_search');
+      },
     },
+
+    /**
+     * AI HOOKS
+     * - process(): THROWS - AI processing requires compute infrastructure (managed-only)
+     * - storeMemory(): NO-OP - OSS can emit memory events, managed tier stores them
+     *
+     * This hook is managed-only and intentionally unavailable in OSS.
+     */
     ai: {
-      process: () => managedOnlyError('ai_agents', 'AI processing'),
+      process: () => {
+        throw new ManagedOnlyError('ai_agents');
+      },
       storeMemory: async () => {
-        /* no-op in OSS */
+        // NO-OP: OSS emits memory events but they aren't stored
+        // Managed tier intercepts these and persists AI memory
       },
     },
+
+    /**
+     * NOTIFICATION HOOKS
+     * - sendPush(): NO-OP - OSS can request push, managed tier delivers
+     * - registerDevice(): NO-OP - OSS can register, managed tier stores
+     *
+     * This hook is managed-only and intentionally unavailable in OSS.
+     */
     notification: {
       sendPush: async () => {
-        /* no-op in OSS */
+        // NO-OP: OSS can request push notifications but they aren't delivered
+        // Managed tier intercepts these and delivers via APNS/FCM
       },
       registerDevice: async () => {
-        /* no-op in OSS */
+        // NO-OP: OSS can register devices but tokens aren't stored
+        // Managed tier stores device tokens for push delivery
       },
     },
+
+    /**
+     * KMS HOOKS
+     * - encrypt(): THROWS - Encryption requires managed KMS (managed-only)
+     * - decrypt(): THROWS - Decryption requires managed KMS (managed-only)
+     * - rotateKey(): THROWS - Key rotation requires managed KMS (managed-only)
+     *
+     * This hook is managed-only and intentionally unavailable in OSS.
+     * For self-hosted encryption, implement your own key management.
+     */
     kms: {
-      encrypt: () => managedOnlyError('kms', 'KMS encryption'),
-      decrypt: () => managedOnlyError('kms', 'KMS decryption'),
-      rotateKey: () => managedOnlyError('kms', 'Key rotation'),
+      encrypt: () => {
+        throw new ManagedOnlyError('kms');
+      },
+      decrypt: () => {
+        throw new ManagedOnlyError('kms');
+      },
+      rotateKey: () => {
+        throw new ManagedOnlyError('kms');
+      },
     },
   };
 }

@@ -9,28 +9,121 @@ const generateCode = () => {
   return code;
 };
 
+/**
+ * Join a workspace
+ *
+ * Trust hierarchy:
+ * 1. Domain-based auto-join (if workspace has verified domain and user email matches)
+ * 2. Invite link (for external users when domain is verified)
+ * 3. Join code (only if domain is NOT verified)
+ */
 export const join = mutation({
   args: {
-    joinCode: v.string(),
+    joinCode: v.optional(v.string()),
+    inviteCode: v.optional(v.string()),
     workspaceId: v.id('workspaces'),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
-
     if (!userId) throw new Error('Unauthorized.');
 
-    const workspace = await ctx.db.get(args.workspaceId);
+    const user = await ctx.db.get(userId);
+    if (!user) throw new Error('User not found.');
 
+    const workspace = await ctx.db.get(args.workspaceId);
     if (!workspace) throw new Error('Workspace not found.');
 
-    if (workspace.joinCode !== args.joinCode.toLowerCase()) throw new Error('Invalid join code.');
-
+    // Check if already a member
     const existingMember = await ctx.db
       .query('members')
-      .withIndex('by_workspace_id_user_id', (q) => q.eq('workspaceId', args.workspaceId).eq('userId', userId))
+      .withIndex('by_workspace_id_user_id', (q) =>
+        q.eq('workspaceId', args.workspaceId).eq('userId', userId)
+      )
       .unique();
 
     if (existingMember) throw new Error('Already a member of this workspace.');
+
+    // Check if workspace has domain verification enabled
+    const domainVerified = workspace.domainVerified ?? false;
+
+    if (domainVerified) {
+      // DOMAIN TRUST PATH
+      // Check if user's email domain matches a verified domain
+      const userEmail = user.email;
+      if (userEmail) {
+        const emailDomain = userEmail.toLowerCase().split('@')[1];
+        if (emailDomain) {
+          const verifiedDomain = await ctx.db
+            .query('domains')
+            .withIndex('by_workspace_domain', (q) =>
+              q.eq('workspaceId', args.workspaceId).eq('domain', emailDomain)
+            )
+            .filter((q) => q.eq(q.field('status'), 'verified'))
+            .first();
+
+          if (verifiedDomain) {
+            // Auto-join: email domain matches verified workspace domain
+            await ctx.db.insert('members', {
+              userId,
+              workspaceId: workspace._id,
+              role: 'member',
+            });
+            return workspace._id;
+          }
+        }
+      }
+
+      // Email doesn't match verified domain - require invite link
+      if (!args.inviteCode) {
+        throw new Error(
+          'This workspace requires an invite link to join. ' +
+            'Contact a workspace admin to get an invite.'
+        );
+      }
+
+      // Validate and redeem invite link
+      // Note: args.inviteCode is guaranteed to be defined here due to the check above
+      const inviteCode = args.inviteCode!;
+      const invite = await ctx.db
+        .query('inviteLinks')
+        .withIndex('by_code', (q) => q.eq('code', inviteCode))
+        .first();
+
+      if (!invite) throw new Error('Invalid invite link.');
+      if (invite.workspaceId !== args.workspaceId)
+        throw new Error('Invalid invite link for this workspace.');
+      if (invite.expiresAt < Date.now()) throw new Error('Invite link has expired.');
+      if (invite.revokedAt) throw new Error('Invite link has been revoked.');
+      if (invite.maxUses && invite.usedCount >= invite.maxUses) {
+        throw new Error('Invite link has reached maximum uses.');
+      }
+
+      // Increment use count
+      await ctx.db.patch(invite._id, { usedCount: invite.usedCount + 1 });
+
+      // Create member
+      await ctx.db.insert('members', {
+        userId,
+        workspaceId: workspace._id,
+        role: 'member',
+      });
+
+      return workspace._id;
+    }
+
+    // NO DOMAIN VERIFICATION - use join code (original behavior)
+    const joinCodeEnabled = workspace.joinCodeEnabled ?? true;
+    if (!joinCodeEnabled) {
+      throw new Error('Join codes are disabled for this workspace.');
+    }
+
+    if (!args.joinCode) {
+      throw new Error('Join code is required.');
+    }
+
+    if (workspace.joinCode !== args.joinCode.toLowerCase()) {
+      throw new Error('Invalid join code.');
+    }
 
     await ctx.db.insert('members', {
       userId,

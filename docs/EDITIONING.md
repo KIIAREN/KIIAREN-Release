@@ -24,6 +24,7 @@ The distinction is architectural, not configurational. Managed features cannot b
 | **Reactions** | Emoji reactions on messages |
 | **Real-time** | Live updates via WebSocket subscriptions |
 | **Auth** | Email/password, Basic OAuth (Google, GitHub) |
+| **Domain Trust** | DNS TXT domain verification, email-based auto-join, admin invite links |
 | **Search** | In-memory search (docs, boards) - not indexed |
 | **Storage** | Local filesystem or S3-compatible storage |
 

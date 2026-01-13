@@ -105,6 +105,32 @@ export { createSelfHostProvider } from './providers/self-host';
 // Managed feature stubs
 export { createOSSStubs } from './managed/types';
 
+// Domain trust primitives
+export type {
+  DomainStatus,
+  Domain,
+  DomainVerificationResult,
+  DomainProvider,
+  InviteLink,
+  InviteLinkScope,
+  InviteLinkScopeWorkspace,
+  InviteLinkScopeChannel,
+  CreateInviteLinkInput,
+  InviteRedemptionResult,
+  InviteProvider,
+  WorkspaceDomainFields,
+} from './domain/types';
+export { DNS_TXT_PREFIX, DNS_TXT_SUBDOMAIN } from './domain/types';
+
+// Error types
+export {
+  ManagedOnlyError,
+  NotImplementedError,
+  DomainVerificationError,
+  InviteLinkError,
+  isKiiarenError,
+} from './errors';
+
 // -----------------------------------------------------------------------------
 // Provider Context (for React integration)
 // -----------------------------------------------------------------------------
@@ -176,4 +202,6 @@ export const OSS_FEATURES = [
   'basic_auth', // email/password, basic OAuth
   'basic_search', // non-indexed, in-memory
   'real_time', // WebSocket/subscription updates
+  'domain_verification', // DNS TXT verification for workspace trust
+  'invite_links', // Admin-issued invite links for external users
 ] as const;

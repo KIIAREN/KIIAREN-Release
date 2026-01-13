@@ -8,7 +8,44 @@ const schema = defineSchema({
     name: v.string(),
     userId: v.id('users'),
     joinCode: v.string(),
+    // Domain trust fields (optional for backwards compatibility)
+    domainVerified: v.optional(v.boolean()),
+    joinCodeEnabled: v.optional(v.boolean()),
   }),
+  // Domain verification table
+  domains: defineTable({
+    workspaceId: v.id('workspaces'),
+    domain: v.string(), // e.g., "acme.com" - stored lowercase
+    verificationToken: v.string(),
+    status: v.union(
+      v.literal('pending'),
+      v.literal('verified'),
+      v.literal('failed')
+    ),
+    verifiedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    createdBy: v.id('users'),
+  })
+    .index('by_workspace_id', ['workspaceId'])
+    .index('by_domain', ['domain'])
+    .index('by_workspace_domain', ['workspaceId', 'domain']),
+  // Invite links for external users (when domain is verified)
+  inviteLinks: defineTable({
+    workspaceId: v.id('workspaces'),
+    code: v.string(), // Unique URL-safe code
+    createdBy: v.id('users'),
+    createdAt: v.number(),
+    expiresAt: v.number(),
+    maxUses: v.optional(v.number()),
+    usedCount: v.number(),
+    scope: v.union(
+      v.object({ type: v.literal('workspace') }),
+      v.object({ type: v.literal('channel'), channelId: v.id('channels') })
+    ),
+    revokedAt: v.optional(v.number()),
+  })
+    .index('by_workspace_id', ['workspaceId'])
+    .index('by_code', ['code']),
   members: defineTable({
     userId: v.id('users'),
     workspaceId: v.id('workspaces'),

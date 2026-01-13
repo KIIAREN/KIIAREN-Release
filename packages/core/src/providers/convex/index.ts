@@ -353,6 +353,95 @@ export function createConvexProvider(): BackendProvider {
         throw new Error('Call within ConvexProvider context');
       },
     },
+
+    domain: {
+      async add(workspaceId: EntityId, domain: string): Promise<EntityId> {
+        // Delegates to api.domains.addDomain
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async verify(
+        domainId: EntityId
+      ): Promise<{ success: boolean; error?: string }> {
+        // Delegates to api.domainActions.verifyDomain
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async list(workspaceId: EntityId): Promise<
+        Array<{
+          id: EntityId;
+          domain: string;
+          status: 'pending' | 'verified' | 'failed';
+          verificationToken: string;
+          verifiedAt?: number;
+          createdAt: number;
+        }>
+      > {
+        // Delegates to api.domains.listDomains
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async remove(domainId: EntityId): Promise<void> {
+        // Delegates to api.domains.removeDomain
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async checkEmail(
+        workspaceId: EntityId,
+        email: string
+      ): Promise<{ matches: boolean; domain?: string }> {
+        // Delegates to api.domains.checkEmailDomain
+        throw new Error('Call within ConvexProvider context');
+      },
+    },
+
+    invite: {
+      async create(
+        workspaceId: EntityId,
+        expiresInHours: number,
+        scope: 'workspace' | { type: 'channel'; channelId: EntityId },
+        maxUses?: number
+      ): Promise<EntityId> {
+        // Delegates to api.inviteLinks.create
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async getByCode(code: string): Promise<{
+        id: EntityId;
+        workspaceId: EntityId;
+        expiresAt: number;
+        scope: 'workspace' | { type: 'channel'; channelId: EntityId };
+      } | null> {
+        // Delegates to api.inviteLinks.getByCode
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async redeem(code: string): Promise<EntityId> {
+        // Delegates to api.workspaces.join with inviteCode
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async list(workspaceId: EntityId): Promise<
+        Array<{
+          id: EntityId;
+          code: string;
+          expiresAt: number;
+          maxUses?: number;
+          usedCount: number;
+          scope: 'workspace' | { type: 'channel'; channelId: EntityId };
+          revokedAt?: number;
+          createdAt: number;
+        }>
+      > {
+        // Delegates to api.inviteLinks.list
+        throw new Error('Call within ConvexProvider context');
+      },
+
+      async revoke(inviteLinkId: EntityId): Promise<void> {
+        // Delegates to api.inviteLinks.revoke
+        throw new Error('Call within ConvexProvider context');
+      },
+    },
   };
 
   const storage: StorageProvider = {

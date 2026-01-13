@@ -183,6 +183,10 @@ export interface Workspace {
   ownerId: EntityId;
   joinCode: string;
   createdAt: number;
+  /** True if any domain is verified for this workspace */
+  domainVerified: boolean;
+  /** False when domainVerified is true (public join codes disabled) */
+  joinCodeEnabled: boolean;
 }
 
 export interface Channel {
@@ -443,6 +447,88 @@ export interface PersistenceProvider {
       data: Partial<Pick<Board, 'title' | 'excalidrawData'>>
     ): Promise<void>;
     remove(id: EntityId): Promise<void>;
+  };
+
+  // Domain verification
+  domain: {
+    /**
+     * Add a domain for verification (admin-only)
+     * Creates a pending domain with verification token.
+     */
+    add(workspaceId: EntityId, domain: string): Promise<EntityId>;
+    /**
+     * Attempt DNS TXT verification (admin-only)
+     */
+    verify(domainId: EntityId): Promise<{ success: boolean; error?: string }>;
+    /**
+     * List all domains for workspace (admin-only)
+     */
+    list(workspaceId: EntityId): Promise<
+      Array<{
+        id: EntityId;
+        domain: string;
+        status: 'pending' | 'verified' | 'failed';
+        verificationToken: string;
+        verifiedAt?: number;
+        createdAt: number;
+      }>
+    >;
+    /**
+     * Remove a domain (admin-only)
+     */
+    remove(domainId: EntityId): Promise<void>;
+    /**
+     * Check if email matches verified domain (public)
+     */
+    checkEmail(
+      workspaceId: EntityId,
+      email: string
+    ): Promise<{ matches: boolean; domain?: string }>;
+  };
+
+  // Invite links
+  invite: {
+    /**
+     * Create an invite link (admin-only)
+     */
+    create(
+      workspaceId: EntityId,
+      expiresInHours: number,
+      scope: 'workspace' | { type: 'channel'; channelId: EntityId },
+      maxUses?: number
+    ): Promise<EntityId>;
+    /**
+     * Get invite by code (public)
+     */
+    getByCode(code: string): Promise<{
+      id: EntityId;
+      workspaceId: EntityId;
+      expiresAt: number;
+      scope: 'workspace' | { type: 'channel'; channelId: EntityId };
+    } | null>;
+    /**
+     * Redeem invite link (authenticated)
+     */
+    redeem(code: string): Promise<EntityId>; // Returns workspace/channel ID
+    /**
+     * List invite links (admin-only)
+     */
+    list(workspaceId: EntityId): Promise<
+      Array<{
+        id: EntityId;
+        code: string;
+        expiresAt: number;
+        maxUses?: number;
+        usedCount: number;
+        scope: 'workspace' | { type: 'channel'; channelId: EntityId };
+        revokedAt?: number;
+        createdAt: number;
+      }>
+    >;
+    /**
+     * Revoke invite link (admin-only)
+     */
+    revoke(inviteLinkId: EntityId): Promise<void>;
   };
 }
 

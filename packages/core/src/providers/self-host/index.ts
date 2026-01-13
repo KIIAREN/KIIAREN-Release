@@ -49,6 +49,11 @@ import type {
 // Implementation Status
 // -----------------------------------------------------------------------------
 
+/**
+ * Throws NotImplementedError for all unimplemented methods.
+ * IMPORTANT: Always use `return NOT_IMPLEMENTED(...)` to ensure TypeScript
+ * understands the function never completes normally.
+ */
 const NOT_IMPLEMENTED = (method: string): never => {
   throw new Error(
     `[SelfHostProvider] ${method} is not yet implemented. ` +
@@ -91,7 +96,7 @@ export function createSelfHostProvider(): BackendProvider {
 
   const auth: AuthProvider = {
     async getSession(): Promise<Session | null> {
-      NOT_IMPLEMENTED('auth.getSession');
+      return NOT_IMPLEMENTED('auth.getSession');
       // Implementation notes:
       // - Check JWT from cookie/header
       // - Validate signature
@@ -100,7 +105,7 @@ export function createSelfHostProvider(): BackendProvider {
     },
 
     async getCurrentUser(): Promise<UserIdentity | null> {
-      NOT_IMPLEMENTED('auth.getCurrentUser');
+      return NOT_IMPLEMENTED('auth.getCurrentUser');
       // Implementation notes:
       // - Get session
       // - Query users table by session.userId
@@ -108,7 +113,7 @@ export function createSelfHostProvider(): BackendProvider {
     },
 
     async signInWithPassword(email: string, password: string): Promise<void> {
-      NOT_IMPLEMENTED('auth.signInWithPassword');
+      return NOT_IMPLEMENTED('auth.signInWithPassword');
       // Implementation notes:
       // - Query users table by email
       // - Verify password hash (argon2/bcrypt)
@@ -121,7 +126,7 @@ export function createSelfHostProvider(): BackendProvider {
       password: string,
       name: string
     ): Promise<void> {
-      NOT_IMPLEMENTED('auth.signUpWithPassword');
+      return NOT_IMPLEMENTED('auth.signUpWithPassword');
       // Implementation notes:
       // - Validate email format
       // - Check email not already registered
@@ -131,7 +136,7 @@ export function createSelfHostProvider(): BackendProvider {
     },
 
     async signInWithOAuth(provider: 'google' | 'github'): Promise<void> {
-      NOT_IMPLEMENTED('auth.signInWithOAuth');
+      return NOT_IMPLEMENTED('auth.signInWithOAuth');
       // Implementation notes:
       // - Redirect to OAuth provider
       // - Handle callback
@@ -140,7 +145,7 @@ export function createSelfHostProvider(): BackendProvider {
     },
 
     async signOut(): Promise<void> {
-      NOT_IMPLEMENTED('auth.signOut');
+      return NOT_IMPLEMENTED('auth.signOut');
       // Implementation notes:
       // - Invalidate session in database
       // - Clear JWT cookie
@@ -149,7 +154,7 @@ export function createSelfHostProvider(): BackendProvider {
     onAuthStateChange(
       callback: (session: Session | null) => void
     ): UnsubscribeFn {
-      NOT_IMPLEMENTED('auth.onAuthStateChange');
+      return NOT_IMPLEMENTED('auth.onAuthStateChange');
       // Implementation notes:
       // - Subscribe to WebSocket auth channel
       // - Call callback on auth events
@@ -163,7 +168,7 @@ export function createSelfHostProvider(): BackendProvider {
       eventTypes: KernelEvent['type'][],
       callback: (event: KernelEvent) => void
     ): UnsubscribeFn {
-      NOT_IMPLEMENTED('events.subscribe');
+      return NOT_IMPLEMENTED('events.subscribe');
       // Implementation notes:
       // - Connect to WebSocket if not connected
       // - Subscribe to workspace channel
@@ -173,7 +178,7 @@ export function createSelfHostProvider(): BackendProvider {
     },
 
     async emit(event: KernelEvent): Promise<void> {
-      NOT_IMPLEMENTED('events.emit');
+      return NOT_IMPLEMENTED('events.emit');
       // Implementation notes:
       // - Validate event structure
       // - Publish to WebSocket server
@@ -184,13 +189,13 @@ export function createSelfHostProvider(): BackendProvider {
   const persistence: PersistenceProvider = {
     workspace: {
       async create(name: string): Promise<EntityId> {
-        NOT_IMPLEMENTED('persistence.workspace.create');
+        return NOT_IMPLEMENTED('persistence.workspace.create');
         // SQL: INSERT INTO workspaces (id, name, owner_id, join_code, created_at)
         //      VALUES ($1, $2, $3, $4, NOW())
       },
 
       async get(id: EntityId): Promise<Workspace | null> {
-        NOT_IMPLEMENTED('persistence.workspace.get');
+        return NOT_IMPLEMENTED('persistence.workspace.get');
         // SQL: SELECT * FROM workspaces WHERE id = $1
       },
 
@@ -198,58 +203,58 @@ export function createSelfHostProvider(): BackendProvider {
         id: EntityId,
         data: Partial<Pick<Workspace, 'name'>>
       ): Promise<void> {
-        NOT_IMPLEMENTED('persistence.workspace.update');
+        return NOT_IMPLEMENTED('persistence.workspace.update');
         // SQL: UPDATE workspaces SET name = $2 WHERE id = $1
       },
 
       async remove(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.workspace.remove');
+        return NOT_IMPLEMENTED('persistence.workspace.remove');
         // SQL: DELETE FROM workspaces WHERE id = $1
         // Cascade: members, channels, messages, docs, boards
       },
 
       async getByUserId(userId: EntityId): Promise<Workspace[]> {
-        NOT_IMPLEMENTED('persistence.workspace.getByUserId');
+        return NOT_IMPLEMENTED('persistence.workspace.getByUserId');
         // SQL: SELECT w.* FROM workspaces w
         //      JOIN members m ON m.workspace_id = w.id
         //      WHERE m.user_id = $1
       },
 
       async join(joinCode: string): Promise<EntityId> {
-        NOT_IMPLEMENTED('persistence.workspace.join');
+        return NOT_IMPLEMENTED('persistence.workspace.join');
         // SQL: SELECT id FROM workspaces WHERE join_code = $1
         // Then: INSERT INTO members (workspace_id, user_id, role)
       },
 
       async regenerateJoinCode(id: EntityId): Promise<string> {
-        NOT_IMPLEMENTED('persistence.workspace.regenerateJoinCode');
+        return NOT_IMPLEMENTED('persistence.workspace.regenerateJoinCode');
         // SQL: UPDATE workspaces SET join_code = $2 WHERE id = $1
       },
     },
 
     channel: {
       async create(workspaceId: EntityId, name: string): Promise<EntityId> {
-        NOT_IMPLEMENTED('persistence.channel.create');
+        return NOT_IMPLEMENTED('persistence.channel.create');
         // SQL: INSERT INTO channels (id, workspace_id, name, created_at)
       },
 
       async get(workspaceId: EntityId): Promise<Channel[]> {
-        NOT_IMPLEMENTED('persistence.channel.get');
+        return NOT_IMPLEMENTED('persistence.channel.get');
         // SQL: SELECT * FROM channels WHERE workspace_id = $1 ORDER BY name
       },
 
       async getById(id: EntityId): Promise<Channel | null> {
-        NOT_IMPLEMENTED('persistence.channel.getById');
+        return NOT_IMPLEMENTED('persistence.channel.getById');
         // SQL: SELECT * FROM channels WHERE id = $1
       },
 
       async update(id: EntityId, name: string): Promise<void> {
-        NOT_IMPLEMENTED('persistence.channel.update');
+        return NOT_IMPLEMENTED('persistence.channel.update');
         // SQL: UPDATE channels SET name = $2 WHERE id = $1
       },
 
       async remove(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.channel.remove');
+        return NOT_IMPLEMENTED('persistence.channel.remove');
         // SQL: DELETE FROM channels WHERE id = $1
         // Cascade: messages in channel
       },
@@ -257,33 +262,33 @@ export function createSelfHostProvider(): BackendProvider {
 
     member: {
       async get(workspaceId: EntityId): Promise<Member[]> {
-        NOT_IMPLEMENTED('persistence.member.get');
+        return NOT_IMPLEMENTED('persistence.member.get');
         // SQL: SELECT m.*, u.name, u.image FROM members m
         //      JOIN users u ON u.id = m.user_id
         //      WHERE m.workspace_id = $1
       },
 
       async getById(id: EntityId): Promise<Member | null> {
-        NOT_IMPLEMENTED('persistence.member.getById');
+        return NOT_IMPLEMENTED('persistence.member.getById');
         // SQL: SELECT m.*, u.name, u.image FROM members m
         //      JOIN users u ON u.id = m.user_id
         //      WHERE m.id = $1
       },
 
       async getCurrent(workspaceId: EntityId): Promise<Member | null> {
-        NOT_IMPLEMENTED('persistence.member.getCurrent');
+        return NOT_IMPLEMENTED('persistence.member.getCurrent');
         // SQL: SELECT m.*, u.name, u.image FROM members m
         //      JOIN users u ON u.id = m.user_id
         //      WHERE m.workspace_id = $1 AND m.user_id = $current_user_id
       },
 
       async updateRole(id: EntityId, role: 'admin' | 'member'): Promise<void> {
-        NOT_IMPLEMENTED('persistence.member.updateRole');
+        return NOT_IMPLEMENTED('persistence.member.updateRole');
         // SQL: UPDATE members SET role = $2 WHERE id = $1
       },
 
       async remove(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.member.remove');
+        return NOT_IMPLEMENTED('persistence.member.remove');
         // SQL: DELETE FROM members WHERE id = $1
       },
     },
@@ -297,7 +302,7 @@ export function createSelfHostProvider(): BackendProvider {
         body: string;
         imageId?: EntityId;
       }): Promise<EntityId> {
-        NOT_IMPLEMENTED('persistence.message.create');
+        return NOT_IMPLEMENTED('persistence.message.create');
         // SQL: INSERT INTO messages (id, workspace_id, channel_id, ...)
       },
 
@@ -309,31 +314,31 @@ export function createSelfHostProvider(): BackendProvider {
         },
         pagination?: PaginationParams
       ): Promise<PaginatedResult<Message>> {
-        NOT_IMPLEMENTED('persistence.message.get');
+        return NOT_IMPLEMENTED('persistence.message.get');
         // SQL: SELECT m.*, ... FROM messages m
         //      WHERE ... ORDER BY created_at DESC
         //      LIMIT $limit OFFSET $cursor
       },
 
       async getById(id: EntityId): Promise<Message | null> {
-        NOT_IMPLEMENTED('persistence.message.getById');
+        return NOT_IMPLEMENTED('persistence.message.getById');
         // SQL: SELECT m.*, ... FROM messages m WHERE m.id = $1
       },
 
       async update(id: EntityId, body: string): Promise<void> {
-        NOT_IMPLEMENTED('persistence.message.update');
+        return NOT_IMPLEMENTED('persistence.message.update');
         // SQL: UPDATE messages SET body = $2, updated_at = NOW() WHERE id = $1
       },
 
       async remove(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.message.remove');
+        return NOT_IMPLEMENTED('persistence.message.remove');
         // SQL: DELETE FROM messages WHERE id = $1
       },
     },
 
     reaction: {
       async toggle(messageId: EntityId, value: string): Promise<void> {
-        NOT_IMPLEMENTED('persistence.reaction.toggle');
+        return NOT_IMPLEMENTED('persistence.reaction.toggle');
         // SQL: Check if exists, then INSERT or DELETE
       },
     },
@@ -344,7 +349,7 @@ export function createSelfHostProvider(): BackendProvider {
         memberOneId: EntityId,
         memberTwoId: EntityId
       ): Promise<EntityId> {
-        NOT_IMPLEMENTED('persistence.conversation.createOrGet');
+        return NOT_IMPLEMENTED('persistence.conversation.createOrGet');
         // SQL: SELECT id FROM conversations
         //      WHERE workspace_id = $1 AND
         //      ((member_one_id = $2 AND member_two_id = $3) OR
@@ -359,7 +364,7 @@ export function createSelfHostProvider(): BackendProvider {
         title: string,
         parentDocumentId?: EntityId
       ): Promise<EntityId> {
-        NOT_IMPLEMENTED('persistence.doc.create');
+        return NOT_IMPLEMENTED('persistence.doc.create');
         // SQL: INSERT INTO docs (id, workspace_id, title, parent_document_id, ...)
       },
 
@@ -367,14 +372,14 @@ export function createSelfHostProvider(): BackendProvider {
         workspaceId: EntityId,
         parentDocumentId?: EntityId
       ): Promise<Doc[]> {
-        NOT_IMPLEMENTED('persistence.doc.get');
+        return NOT_IMPLEMENTED('persistence.doc.get');
         // SQL: SELECT * FROM docs WHERE workspace_id = $1
         //      AND parent_document_id IS NOT DISTINCT FROM $2
         //      AND is_archived = false
       },
 
       async getById(id: EntityId): Promise<Doc | null> {
-        NOT_IMPLEMENTED('persistence.doc.getById');
+        return NOT_IMPLEMENTED('persistence.doc.getById');
         // SQL: SELECT * FROM docs WHERE id = $1
       },
 
@@ -382,29 +387,29 @@ export function createSelfHostProvider(): BackendProvider {
         id: EntityId,
         data: Partial<Pick<Doc, 'title' | 'content' | 'icon' | 'isPublished'>>
       ): Promise<void> {
-        NOT_IMPLEMENTED('persistence.doc.update');
+        return NOT_IMPLEMENTED('persistence.doc.update');
         // SQL: UPDATE docs SET ... WHERE id = $1
       },
 
       async archive(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.doc.archive');
+        return NOT_IMPLEMENTED('persistence.doc.archive');
         // SQL: UPDATE docs SET is_archived = true WHERE id = $1
         // Recursive: UPDATE docs SET is_archived = true WHERE parent_document_id = $1
       },
 
       async restore(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.doc.restore');
+        return NOT_IMPLEMENTED('persistence.doc.restore');
         // SQL: UPDATE docs SET is_archived = false WHERE id = $1
       },
 
       async remove(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.doc.remove');
+        return NOT_IMPLEMENTED('persistence.doc.remove');
         // SQL: DELETE FROM docs WHERE id = $1
         // Recursive: Handle children
       },
 
       async search(workspaceId: EntityId, query: string): Promise<Doc[]> {
-        NOT_IMPLEMENTED('persistence.doc.search');
+        return NOT_IMPLEMENTED('persistence.doc.search');
         // SQL: SELECT * FROM docs WHERE workspace_id = $1
         //      AND (title ILIKE $2 OR content ILIKE $2)
         // Note: Basic LIKE search only. Indexed search requires managed tier.
@@ -413,17 +418,17 @@ export function createSelfHostProvider(): BackendProvider {
 
     board: {
       async create(workspaceId: EntityId, title: string): Promise<EntityId> {
-        NOT_IMPLEMENTED('persistence.board.create');
+        return NOT_IMPLEMENTED('persistence.board.create');
         // SQL: INSERT INTO boards (id, workspace_id, title, ...)
       },
 
       async get(workspaceId: EntityId): Promise<Board[]> {
-        NOT_IMPLEMENTED('persistence.board.get');
+        return NOT_IMPLEMENTED('persistence.board.get');
         // SQL: SELECT * FROM boards WHERE workspace_id = $1
       },
 
       async getById(id: EntityId): Promise<Board | null> {
-        NOT_IMPLEMENTED('persistence.board.getById');
+        return NOT_IMPLEMENTED('persistence.board.getById');
         // SQL: SELECT * FROM boards WHERE id = $1
       },
 
@@ -431,34 +436,123 @@ export function createSelfHostProvider(): BackendProvider {
         id: EntityId,
         data: Partial<Pick<Board, 'title' | 'excalidrawData'>>
       ): Promise<void> {
-        NOT_IMPLEMENTED('persistence.board.update');
+        return NOT_IMPLEMENTED('persistence.board.update');
         // SQL: UPDATE boards SET ... WHERE id = $1
       },
 
       async remove(id: EntityId): Promise<void> {
-        NOT_IMPLEMENTED('persistence.board.remove');
+        return NOT_IMPLEMENTED('persistence.board.remove');
         // SQL: DELETE FROM boards WHERE id = $1
+      },
+    },
+
+    domain: {
+      async add(workspaceId: EntityId, domain: string): Promise<EntityId> {
+        return NOT_IMPLEMENTED('persistence.domain.add');
+        // SQL: INSERT INTO domains (id, workspace_id, domain, verification_token, status, ...)
+      },
+
+      async verify(
+        domainId: EntityId
+      ): Promise<{ success: boolean; error?: string }> {
+        return NOT_IMPLEMENTED('persistence.domain.verify');
+        // DNS TXT lookup and status update
+      },
+
+      async list(workspaceId: EntityId): Promise<
+        Array<{
+          id: EntityId;
+          domain: string;
+          status: 'pending' | 'verified' | 'failed';
+          verificationToken: string;
+          verifiedAt?: number;
+          createdAt: number;
+        }>
+      > {
+        return NOT_IMPLEMENTED('persistence.domain.list');
+        // SQL: SELECT * FROM domains WHERE workspace_id = $1
+      },
+
+      async remove(domainId: EntityId): Promise<void> {
+        return NOT_IMPLEMENTED('persistence.domain.remove');
+        // SQL: DELETE FROM domains WHERE id = $1
+      },
+
+      async checkEmail(
+        workspaceId: EntityId,
+        email: string
+      ): Promise<{ matches: boolean; domain?: string }> {
+        return NOT_IMPLEMENTED('persistence.domain.checkEmail');
+        // SQL: SELECT * FROM domains WHERE workspace_id = $1 AND domain = $email_domain AND status = 'verified'
+      },
+    },
+
+    invite: {
+      async create(
+        workspaceId: EntityId,
+        expiresInHours: number,
+        scope: 'workspace' | { type: 'channel'; channelId: EntityId },
+        maxUses?: number
+      ): Promise<EntityId> {
+        return NOT_IMPLEMENTED('persistence.invite.create');
+        // SQL: INSERT INTO invite_links (id, workspace_id, code, expires_at, ...)
+      },
+
+      async getByCode(code: string): Promise<{
+        id: EntityId;
+        workspaceId: EntityId;
+        expiresAt: number;
+        scope: 'workspace' | { type: 'channel'; channelId: EntityId };
+      } | null> {
+        return NOT_IMPLEMENTED('persistence.invite.getByCode');
+        // SQL: SELECT * FROM invite_links WHERE code = $1 AND expires_at > NOW() AND revoked_at IS NULL
+      },
+
+      async redeem(code: string): Promise<EntityId> {
+        return NOT_IMPLEMENTED('persistence.invite.redeem');
+        // Transaction: Validate invite, increment used_count, create member
+      },
+
+      async list(workspaceId: EntityId): Promise<
+        Array<{
+          id: EntityId;
+          code: string;
+          expiresAt: number;
+          maxUses?: number;
+          usedCount: number;
+          scope: 'workspace' | { type: 'channel'; channelId: EntityId };
+          revokedAt?: number;
+          createdAt: number;
+        }>
+      > {
+        return NOT_IMPLEMENTED('persistence.invite.list');
+        // SQL: SELECT * FROM invite_links WHERE workspace_id = $1
+      },
+
+      async revoke(inviteLinkId: EntityId): Promise<void> {
+        return NOT_IMPLEMENTED('persistence.invite.revoke');
+        // SQL: UPDATE invite_links SET revoked_at = NOW() WHERE id = $1
       },
     },
   };
 
   const storage: StorageProvider = {
     async generateUploadUrl(): Promise<string> {
-      NOT_IMPLEMENTED('storage.generateUploadUrl');
+      return NOT_IMPLEMENTED('storage.generateUploadUrl');
       // Implementation depends on storageProvider config:
       // - s3: Generate presigned PUT URL
       // - local: Return internal upload endpoint
     },
 
     async getUrl(storageId: EntityId): Promise<string | null> {
-      NOT_IMPLEMENTED('storage.getUrl');
+      return NOT_IMPLEMENTED('storage.getUrl');
       // Implementation depends on storageProvider config:
       // - s3: Generate presigned GET URL
       // - local: Return static file URL
     },
 
     async remove(storageId: EntityId): Promise<void> {
-      NOT_IMPLEMENTED('storage.remove');
+      return NOT_IMPLEMENTED('storage.remove');
       // Implementation depends on storageProvider config:
       // - s3: Delete object
       // - local: Delete file from disk

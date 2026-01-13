@@ -92,25 +92,25 @@ const NOT_IN_REACT = (method: string): never => {
 function createConvexBackendProvider(): BackendProvider {
   const auth: AuthProvider = {
     async getSession(): Promise<Session | null> {
-      NOT_IN_REACT('auth.getSession');
+      return NOT_IN_REACT('auth.getSession');
     },
     async getCurrentUser(): Promise<UserIdentity | null> {
-      NOT_IN_REACT('auth.getCurrentUser');
+      return NOT_IN_REACT('auth.getCurrentUser');
     },
     async signInWithPassword(): Promise<void> {
-      NOT_IN_REACT('auth.signInWithPassword');
+      return NOT_IN_REACT('auth.signInWithPassword');
     },
     async signUpWithPassword(): Promise<void> {
-      NOT_IN_REACT('auth.signUpWithPassword');
+      return NOT_IN_REACT('auth.signUpWithPassword');
     },
     async signInWithOAuth(): Promise<void> {
-      NOT_IN_REACT('auth.signInWithOAuth');
+      return NOT_IN_REACT('auth.signInWithOAuth');
     },
     async signOut(): Promise<void> {
-      NOT_IN_REACT('auth.signOut');
+      return NOT_IN_REACT('auth.signOut');
     },
     onAuthStateChange(): UnsubscribeFn {
-      NOT_IN_REACT('auth.onAuthStateChange');
+      return NOT_IN_REACT('auth.onAuthStateChange');
     },
   };
 
@@ -127,64 +127,78 @@ function createConvexBackendProvider(): BackendProvider {
 
   const persistence: PersistenceProvider = {
     workspace: {
-      async create(): Promise<EntityId> { NOT_IN_REACT('workspace.create'); },
-      async get(): Promise<Workspace | null> { NOT_IN_REACT('workspace.get'); },
-      async update(): Promise<void> { NOT_IN_REACT('workspace.update'); },
-      async remove(): Promise<void> { NOT_IN_REACT('workspace.remove'); },
-      async getByUserId(): Promise<Workspace[]> { NOT_IN_REACT('workspace.getByUserId'); },
-      async join(): Promise<EntityId> { NOT_IN_REACT('workspace.join'); },
-      async regenerateJoinCode(): Promise<string> { NOT_IN_REACT('workspace.regenerateJoinCode'); },
+      async create(): Promise<EntityId> { return NOT_IN_REACT('workspace.create'); },
+      async get(): Promise<Workspace | null> { return NOT_IN_REACT('workspace.get'); },
+      async update(): Promise<void> { return NOT_IN_REACT('workspace.update'); },
+      async remove(): Promise<void> { return NOT_IN_REACT('workspace.remove'); },
+      async getByUserId(): Promise<Workspace[]> { return NOT_IN_REACT('workspace.getByUserId'); },
+      async join(): Promise<EntityId> { return NOT_IN_REACT('workspace.join'); },
+      async regenerateJoinCode(): Promise<string> { return NOT_IN_REACT('workspace.regenerateJoinCode'); },
     },
     channel: {
-      async create(): Promise<EntityId> { NOT_IN_REACT('channel.create'); },
-      async get(): Promise<Channel[]> { NOT_IN_REACT('channel.get'); },
-      async getById(): Promise<Channel | null> { NOT_IN_REACT('channel.getById'); },
-      async update(): Promise<void> { NOT_IN_REACT('channel.update'); },
-      async remove(): Promise<void> { NOT_IN_REACT('channel.remove'); },
+      async create(): Promise<EntityId> { return NOT_IN_REACT('channel.create'); },
+      async get(): Promise<Channel[]> { return NOT_IN_REACT('channel.get'); },
+      async getById(): Promise<Channel | null> { return NOT_IN_REACT('channel.getById'); },
+      async update(): Promise<void> { return NOT_IN_REACT('channel.update'); },
+      async remove(): Promise<void> { return NOT_IN_REACT('channel.remove'); },
     },
     member: {
-      async get(): Promise<Member[]> { NOT_IN_REACT('member.get'); },
-      async getById(): Promise<Member | null> { NOT_IN_REACT('member.getById'); },
-      async getCurrent(): Promise<Member | null> { NOT_IN_REACT('member.getCurrent'); },
-      async updateRole(): Promise<void> { NOT_IN_REACT('member.updateRole'); },
-      async remove(): Promise<void> { NOT_IN_REACT('member.remove'); },
+      async get(): Promise<Member[]> { return NOT_IN_REACT('member.get'); },
+      async getById(): Promise<Member | null> { return NOT_IN_REACT('member.getById'); },
+      async getCurrent(): Promise<Member | null> { return NOT_IN_REACT('member.getCurrent'); },
+      async updateRole(): Promise<void> { return NOT_IN_REACT('member.updateRole'); },
+      async remove(): Promise<void> { return NOT_IN_REACT('member.remove'); },
     },
     message: {
-      async create(): Promise<EntityId> { NOT_IN_REACT('message.create'); },
-      async get(): Promise<PaginatedResult<Message>> { NOT_IN_REACT('message.get'); },
-      async getById(): Promise<Message | null> { NOT_IN_REACT('message.getById'); },
-      async update(): Promise<void> { NOT_IN_REACT('message.update'); },
-      async remove(): Promise<void> { NOT_IN_REACT('message.remove'); },
+      async create(): Promise<EntityId> { return NOT_IN_REACT('message.create'); },
+      async get(): Promise<PaginatedResult<Message>> { return NOT_IN_REACT('message.get'); },
+      async getById(): Promise<Message | null> { return NOT_IN_REACT('message.getById'); },
+      async update(): Promise<void> { return NOT_IN_REACT('message.update'); },
+      async remove(): Promise<void> { return NOT_IN_REACT('message.remove'); },
     },
     reaction: {
-      async toggle(): Promise<void> { NOT_IN_REACT('reaction.toggle'); },
+      async toggle(): Promise<void> { return NOT_IN_REACT('reaction.toggle'); },
     },
     conversation: {
-      async createOrGet(): Promise<EntityId> { NOT_IN_REACT('conversation.createOrGet'); },
+      async createOrGet(): Promise<EntityId> { return NOT_IN_REACT('conversation.createOrGet'); },
     },
     doc: {
-      async create(): Promise<EntityId> { NOT_IN_REACT('doc.create'); },
-      async get(): Promise<Doc[]> { NOT_IN_REACT('doc.get'); },
-      async getById(): Promise<Doc | null> { NOT_IN_REACT('doc.getById'); },
-      async update(): Promise<void> { NOT_IN_REACT('doc.update'); },
-      async archive(): Promise<void> { NOT_IN_REACT('doc.archive'); },
-      async restore(): Promise<void> { NOT_IN_REACT('doc.restore'); },
-      async remove(): Promise<void> { NOT_IN_REACT('doc.remove'); },
-      async search(): Promise<Doc[]> { NOT_IN_REACT('doc.search'); },
+      async create(): Promise<EntityId> { return NOT_IN_REACT('doc.create'); },
+      async get(): Promise<Doc[]> { return NOT_IN_REACT('doc.get'); },
+      async getById(): Promise<Doc | null> { return NOT_IN_REACT('doc.getById'); },
+      async update(): Promise<void> { return NOT_IN_REACT('doc.update'); },
+      async archive(): Promise<void> { return NOT_IN_REACT('doc.archive'); },
+      async restore(): Promise<void> { return NOT_IN_REACT('doc.restore'); },
+      async remove(): Promise<void> { return NOT_IN_REACT('doc.remove'); },
+      async search(): Promise<Doc[]> { return NOT_IN_REACT('doc.search'); },
     },
     board: {
-      async create(): Promise<EntityId> { NOT_IN_REACT('board.create'); },
-      async get(): Promise<Board[]> { NOT_IN_REACT('board.get'); },
-      async getById(): Promise<Board | null> { NOT_IN_REACT('board.getById'); },
-      async update(): Promise<void> { NOT_IN_REACT('board.update'); },
-      async remove(): Promise<void> { NOT_IN_REACT('board.remove'); },
+      async create(): Promise<EntityId> { return NOT_IN_REACT('board.create'); },
+      async get(): Promise<Board[]> { return NOT_IN_REACT('board.get'); },
+      async getById(): Promise<Board | null> { return NOT_IN_REACT('board.getById'); },
+      async update(): Promise<void> { return NOT_IN_REACT('board.update'); },
+      async remove(): Promise<void> { return NOT_IN_REACT('board.remove'); },
+    },
+    domain: {
+      async add(): Promise<EntityId> { return NOT_IN_REACT('domain.add'); },
+      async verify(): Promise<{ success: boolean; error?: string }> { return NOT_IN_REACT('domain.verify'); },
+      async list(): Promise<Array<{ id: EntityId; domain: string; status: 'pending' | 'verified' | 'failed'; verificationToken: string; verifiedAt?: number; createdAt: number }>> { return NOT_IN_REACT('domain.list'); },
+      async remove(): Promise<void> { return NOT_IN_REACT('domain.remove'); },
+      async checkEmail(): Promise<{ matches: boolean; domain?: string }> { return NOT_IN_REACT('domain.checkEmail'); },
+    },
+    invite: {
+      async create(): Promise<EntityId> { return NOT_IN_REACT('invite.create'); },
+      async getByCode(): Promise<{ id: EntityId; workspaceId: EntityId; expiresAt: number; scope: 'workspace' | { type: 'channel'; channelId: EntityId } } | null> { return NOT_IN_REACT('invite.getByCode'); },
+      async redeem(): Promise<EntityId> { return NOT_IN_REACT('invite.redeem'); },
+      async list(): Promise<Array<{ id: EntityId; code: string; expiresAt: number; maxUses?: number; usedCount: number; scope: 'workspace' | { type: 'channel'; channelId: EntityId }; revokedAt?: number; createdAt: number }>> { return NOT_IN_REACT('invite.list'); },
+      async revoke(): Promise<void> { return NOT_IN_REACT('invite.revoke'); },
     },
   };
 
   const storage: StorageProvider = {
-    async generateUploadUrl(): Promise<string> { NOT_IN_REACT('storage.generateUploadUrl'); },
-    async getUrl(): Promise<string | null> { NOT_IN_REACT('storage.getUrl'); },
-    async remove(): Promise<void> { NOT_IN_REACT('storage.remove'); },
+    async generateUploadUrl(): Promise<string> { return NOT_IN_REACT('storage.generateUploadUrl'); },
+    async getUrl(): Promise<string | null> { return NOT_IN_REACT('storage.getUrl'); },
+    async remove(): Promise<void> { return NOT_IN_REACT('storage.remove'); },
   };
 
   return {

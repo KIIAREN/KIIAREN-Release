@@ -185,6 +185,8 @@ This enables:
 | Docs (Notion-like) | Yes | Yes |
 | Boards (Excalidraw) | Yes | Yes |
 | Basic auth (email, OAuth) | Yes | Yes |
+| Domain verification (DNS TXT) | Yes | Yes |
+| Admin invite links | Yes | Yes |
 | Indexed full-text search | No | Yes |
 | KMS / key rotation | No | Yes |
 | Audit logs / eDiscovery | No | Yes |
