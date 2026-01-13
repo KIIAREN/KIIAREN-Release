@@ -24,9 +24,9 @@ const LandingPage = () => {
     } else {
       const isProd = window.location.hostname.includes('kiiaren.com');
       if (isProd) {
-        window.location.href = 'https://account.kiiaren.com';
+        window.location.href = 'https://kiiaren.com/auth';
       } else {
-        router.push('/account');
+        router.push('/auth');
       }
     }
   };
