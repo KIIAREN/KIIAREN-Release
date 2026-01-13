@@ -13,18 +13,11 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { requireWorkspaceAdmin, requireAuth } from './lib/access_control';
-
-/**
- * Generate a URL-safe invite code
- */
-function generateInviteCode(): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-  let code = '';
-  for (let i = 0; i < 12; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return code;
-}
+import {
+  generateInviteCode,
+  MAX_COLLISION_RETRIES,
+  TokenCollisionError,
+} from './lib/tokens';
 
 /**
  * Create an invite link
@@ -66,17 +59,22 @@ export const create = mutation({
 
     const userId = await requireAuth(ctx);
 
-    // Generate unique code (retry if collision)
-    let code = generateInviteCode();
-    let attempts = 0;
-    while (attempts < 5) {
+    // Generate unique code with collision retry
+    let code: string | null = null;
+    for (let attempt = 0; attempt < MAX_COLLISION_RETRIES; attempt++) {
+      const candidate = generateInviteCode();
       const existing = await ctx.db
         .query('inviteLinks')
-        .withIndex('by_code', (q) => q.eq('code', code))
+        .withIndex('by_code', (q) => q.eq('code', candidate))
         .first();
-      if (!existing) break;
-      code = generateInviteCode();
-      attempts++;
+      if (!existing) {
+        code = candidate;
+        break;
+      }
+    }
+
+    if (!code) {
+      throw new TokenCollisionError('invite code');
     }
 
     const now = Date.now();

@@ -13,18 +13,7 @@
 import { v } from 'convex/values';
 import { mutation, query, internalMutation } from './_generated/server';
 import { requireWorkspaceAdmin, requireAuth } from './lib/access_control';
-
-/**
- * Generate a cryptographically random verification token
- */
-function generateVerificationToken(): string {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let token = '';
-  for (let i = 0; i < 32; i++) {
-    token += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return token;
-}
+import { generateVerificationToken } from './lib/tokens';
 
 /**
  * Normalize domain to lowercase, strip www prefix
