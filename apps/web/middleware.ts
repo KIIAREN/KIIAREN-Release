@@ -101,7 +101,7 @@ export default convexAuthNextjsMiddleware((req) => {
   }
 
   if (isSignInPage(req) && isAuthenticatedNextjs()) {
-    return nextjsMiddlewareRedirect(req, '/');
+    return nextjsMiddlewareRedirect(req, '/workspace');
   }
 
   return NextResponse.next();
