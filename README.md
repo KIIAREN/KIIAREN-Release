@@ -1,17 +1,18 @@
-# KIIAREN - Real-Time Collaboration Platform
+# KIIAREN-Release - Self-Hosted Open Source Edition
 
-![CodeRabbit Reviews](https://img.shields.io/coderabbit/prs/github/KIIAREN/KIIAREN?utm_source=oss&utm_medium=github&utm_campaign=KIIAREN%2FKIIAREN&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+![CodeRabbit Reviews](https://img.shields.io/coderabbit/prs/github/KIIAREN/KIIAREN-Release?utm_source=oss&utm_medium=github&utm_campaign=KIIAREN%2FKIIAREN-Release&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
-KIIAREN is an open-core collaboration platform with workspaces, channels, direct messages, docs, and whiteboards.
+**KIIAREN-Release** is the open-source, self-hosted edition of KIIAREN - a real-time collaboration platform with workspaces, channels, direct messages, docs, and whiteboards.
+
+> **Note:** This repository is for self-hosted deployments only. For the managed SaaS version deployed at [kiiaren.com](https://kiiaren.com), see the private [KIIAREN-SAAS](https://github.com/fentz26/KIIAREN-SAAS) repository.
 
 ## Deployment Options
 
 | Option | Backend | Status | Best For |
 |--------|---------|--------|----------|
-| **Managed Cloud** | Convex | Production-ready | Most users, teams, enterprises |
-| **Self-Hosted** | PostgreSQL + WebSocket | Skeleton only | Contributors, specific compliance needs |
+| **Self-Hosted** | PostgreSQL + WebSocket | Skeleton only | Contributors, specific compliance needs, self-hosting |
 
-**Default provider: Convex** - A managed backend service that handles real-time subscriptions, authentication, and storage. This is the recommended deployment path.
+**Default provider: Convex** - A managed backend service that handles real-time subscriptions, authentication, and storage. For self-hosted deployments, PostgreSQL + WebSocket support is in development.
 
 ---
 
