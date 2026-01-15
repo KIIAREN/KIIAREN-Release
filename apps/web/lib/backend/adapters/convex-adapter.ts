@@ -21,10 +21,10 @@ import type { PaginatedResult, PaginationParams } from '@kiiaren/core';
  */
 export function useConvexQuery<TConvex, TProvider>(
   query: FunctionReference<'query'>,
-  args: Record<string, unknown> | undefined,
+  args: Record<string, unknown> | undefined | 'skip',
   transform: (data: TConvex | undefined) => TProvider | undefined
 ): { data: TProvider | undefined; isLoading: boolean } {
-  const convexData = useQuery(query, args === undefined ? 'skip' : args);
+  const convexData = useQuery(query, args === 'skip' ? 'skip' : args);
   const data = useMemo(() => transform(convexData), [convexData, transform]);
   const isLoading = convexData === undefined;
 
@@ -78,7 +78,7 @@ export function useConvexMutation<TArgs, TResult>(
  */
 export function useConvexPaginatedQuery<TConvex, TProvider>(
   query: FunctionReference<'query'>,
-  args: Record<string, unknown> | undefined,
+  args: Record<string, unknown> | undefined | 'skip',
   transform: (items: TConvex[]) => TProvider[],
   initialNumItems: number = 20
 ): {
@@ -88,7 +88,7 @@ export function useConvexPaginatedQuery<TConvex, TProvider>(
 } {
   const { results, status, loadMore } = usePaginatedQuery(
     query,
-    args === undefined ? 'skip' : args,
+    args === 'skip' || args === undefined ? 'skip' : args,
     { initialNumItems }
   );
 
