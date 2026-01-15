@@ -18,8 +18,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useRemoveWorkspace } from '@/features/workspaces/api/use-remove-workspace';
-import { useUpdateWorkspace } from '@/features/workspaces/api/use-update-workspace';
+import { useRemoveWorkspace, useUpdateWorkspace } from '@/lib/backend';
 import { useConfirm } from '@/hooks/use-confirm';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 

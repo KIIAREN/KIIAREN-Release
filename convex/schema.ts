@@ -28,7 +28,8 @@ const schema = defineSchema({
   })
     .index('by_workspace_id', ['workspaceId'])
     .index('by_domain', ['domain'])
-    .index('by_workspace_domain', ['workspaceId', 'domain']),
+    .index('by_workspace_domain', ['workspaceId', 'domain'])
+    .index('by_verification_token', ['verificationToken']),
   // Invite links for external users (when domain is verified)
   inviteLinks: defineTable({
     workspaceId: v.id('workspaces'),

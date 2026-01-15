@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 
 import { useGetChannels } from '@/features/channels/api/use-get-channels';
 import { useCreateChannelModal } from '@/features/channels/store/use-create-channel-modal';
-import { useGetWorkspaceInfo } from '@/features/workspaces/api/use-get-workspace-info';
+import { useGetWorkspaceInfo } from '@/lib/backend';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
 const WorkspaceIdPage = () => {
@@ -14,7 +14,7 @@ const WorkspaceIdPage = () => {
   const workspaceId = useWorkspaceId();
   const [open, setOpen] = useCreateChannelModal();
 
-  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceInfo({ id: workspaceId });
+  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceInfo(workspaceId);
   const { data: channels, isLoading: channelsLoading } = useGetChannels({ workspaceId });
 
   const channelId = useMemo(() => channels?.[0]?._id, [channels]);

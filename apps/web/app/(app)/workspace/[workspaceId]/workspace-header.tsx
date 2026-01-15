@@ -3,7 +3,6 @@
 import { ChevronDown, ListFilter, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 
-import { Doc } from '@/../convex/_generated/dataModel';
 import { Hint } from '@/components/hint';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,12 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import type { Workspace } from '@kiiaren/core';
 
 import { InviteModal } from './invite-modal';
 import { PreferencesModal } from './preferences-modal';
 
 interface WorkspaceHeaderProps {
-  workspace: Doc<'workspaces'>;
+  workspace: Workspace;
   isAdmin: boolean;
 }
 

@@ -17,14 +17,14 @@ import {
 } from '@/components/ui/command';
 import { useGetChannels } from '@/features/channels/api/use-get-channels';
 import { useGetMembers } from '@/features/members/api/use-get-members';
-import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
+import { useGetWorkspace } from '@/lib/backend';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
 export const Toolbar = () => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
 
-  const { data } = useGetWorkspace({ id: workspaceId });
+  const { data } = useGetWorkspace(workspaceId);
   const { data: channels } = useGetChannels({ workspaceId });
   const { data: members } = useGetMembers({ workspaceId });
 

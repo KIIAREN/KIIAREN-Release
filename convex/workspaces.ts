@@ -2,12 +2,11 @@ import { getAuthUserId } from '@convex-dev/auth/server';
 import { v } from 'convex/values';
 
 import { mutation, query } from './_generated/server';
-
-const generateCode = () => {
-  const code = Array.from({ length: 6 }, () => '0123456789abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 36)]).join('');
-
-  return code;
-};
+import {
+  generateJoinCode,
+  MAX_COLLISION_RETRIES,
+  TokenCollisionError,
+} from './lib/tokens';
 
 /**
  * Join a workspace
@@ -121,7 +120,8 @@ export const join = mutation({
       throw new Error('Join code is required.');
     }
 
-    if (workspace.joinCode !== args.joinCode.toLowerCase()) {
+    // Case-insensitive comparison to support both old lowercase and new uppercase codes
+    if (workspace.joinCode.toUpperCase() !== args.joinCode.toUpperCase()) {
       throw new Error('Invalid join code.');
     }
 
@@ -151,7 +151,24 @@ export const newJoinCode = mutation({
 
     if (!member || member.role !== 'admin') throw new Error('Unauthorized.');
 
-    const joinCode = generateCode();
+    // Generate unique join code with collision retry
+    let joinCode: string | null = null;
+    for (let attempt = 0; attempt < MAX_COLLISION_RETRIES; attempt++) {
+      const candidate = generateJoinCode();
+      // Check for collision across all workspaces
+      const existing = await ctx.db
+        .query('workspaces')
+        .filter((q) => q.eq(q.field('joinCode'), candidate))
+        .first();
+      if (!existing) {
+        joinCode = candidate;
+        break;
+      }
+    }
+
+    if (!joinCode) {
+      throw new TokenCollisionError('join code');
+    }
 
     await ctx.db.patch(args.workspaceId, {
       joinCode,
@@ -172,7 +189,24 @@ export const create = mutation({
 
     if (args.name.length < 3 || args.name.length > 20) throw new Error('Invalid workspace name.');
 
-    const joinCode = generateCode();
+    // Generate unique join code with collision retry
+    let joinCode: string | null = null;
+    for (let attempt = 0; attempt < MAX_COLLISION_RETRIES; attempt++) {
+      const candidate = generateJoinCode();
+      // Check for collision across all workspaces
+      const existing = await ctx.db
+        .query('workspaces')
+        .filter((q) => q.eq(q.field('joinCode'), candidate))
+        .first();
+      if (!existing) {
+        joinCode = candidate;
+        break;
+      }
+    }
+
+    if (!joinCode) {
+      throw new TokenCollisionError('join code');
+    }
 
     const workspaceId = await ctx.db.insert('workspaces', {
       name: args.name,

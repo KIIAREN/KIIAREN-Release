@@ -9,8 +9,7 @@ import VerificationInput from 'react-verification-input';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { useGetWorkspaceInfo } from '@/features/workspaces/api/use-get-workspace-info';
-import { useJoin } from '@/features/workspaces/api/use-join';
+import { useGetWorkspaceInfo, useJoinWorkspace } from '@/lib/backend';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
 
@@ -18,8 +17,8 @@ const JoinWorkspaceIdPage = () => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
 
-  const { mutate, isPending } = useJoin();
-  const { data, isLoading } = useGetWorkspaceInfo({ id: workspaceId });
+  const { mutate, isPending } = useJoinWorkspace();
+  const { data, isLoading } = useGetWorkspaceInfo(workspaceId);
 
   const isMember = useMemo(() => data?.isMember, [data?.isMember]);
 

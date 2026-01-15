@@ -7,8 +7,8 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { useCreateWorkspace } from '@/lib/backend';
 
-import { useCreateWorkspace } from '../api/use-create-workspace';
 import { useCreateWorkspaceModal } from '../store/use-create-workspace-modal';
 
 export const CreateWorkspaceModal = () => {
