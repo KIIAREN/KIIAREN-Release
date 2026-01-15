@@ -199,6 +199,65 @@ export function useGetWorkspace(id: EntityId) {
 }
 
 /**
+ * Get workspace info by ID (includes member count, channel count, etc.).
+ *
+ * Provider-agnostic: Works with Convex (default) and self-host (when implemented).
+ *
+ * @param id - Workspace ID
+ * @returns Workspace info with loading state
+ */
+export function useGetWorkspaceInfo(id: EntityId) {
+  const { provider } = useBackend();
+  const providerId = useProviderId();
+
+  // Convex implementation
+  if (providerId === 'convex') {
+    return useConvexQuery(
+      api.workspaces.getInfoById,
+      { id: id as Id<'workspaces'> },
+      (data) => data
+    );
+  }
+
+  // Self-host implementation - would need to aggregate data
+  const [info, setInfo] = useState<any | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadWorkspaceInfo() {
+      try {
+        setIsLoading(true);
+        const workspace = await provider.persistence.workspace.get(id);
+        if (!cancelled && workspace) {
+          // For self-host, we'd need to aggregate member/channel counts
+          // For now, return basic workspace info
+          setInfo(workspace);
+        }
+      } catch (error) {
+        console.error('[useGetWorkspaceInfo] Error loading workspace info:', error);
+        if (!cancelled) {
+          setInfo(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadWorkspaceInfo();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [provider, id]);
+
+  return { data: info, isLoading };
+}
+
+/**
  * Create a new workspace.
  *
  * Provider-agnostic: Works with Convex (default) and self-host (when implemented).
