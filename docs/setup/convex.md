@@ -9,7 +9,7 @@ Your `convex/schema.ts` file is **valid and complete** with 7 custom tables + au
 **Evidence:**
 - ✅ Schema file exists and is correctly structured
 - ✅ All function table references match schema definitions
-- ✅ Convex deployment configured: `prod:notable-mouse-667`
+- ✅ Convex deployment configured: `prod:your-deployment-name` (use your own deployment)
 - ❌ **No authentication set up** (no `~/.convex/` directory)
 - ❌ **Schema never pushed** (no `convex.json` or `.convex/` directory)
 
@@ -53,7 +53,7 @@ Welcome to developing with Convex, let's get you logged in.
 ### Step 2: Verify Tables in Dashboard
 
 1. Go to [Convex Dashboard](https://dashboard.convex.dev/)
-2. Select project: **notable-mouse-667**
+2. Select your Convex project (create one if needed)
 3. Click **Data** tab
 4. You should now see **12 tables**:
    - workspaces
@@ -180,7 +180,7 @@ After running `npx convex dev`:
 **Check `.env`:**
 ```bash
 grep CONVEX_DEPLOYMENT .env
-# Should show: prod:notable-mouse-667
+# Should show: prod:your-deployment-name
 ```
 
 If different, update `.env` with correct deployment ID.
@@ -284,7 +284,7 @@ Once deployment succeeds, you'll see:
 ✔ Deployment complete!
 ✔ Functions deployed: 30
 ✔ Schema pushed: 13 tables
-✔ Running at https://notable-mouse-667.convex.cloud
+✔ Running at https://your-deployment-name.convex.cloud
 ```
 
 **Dashboard:**
