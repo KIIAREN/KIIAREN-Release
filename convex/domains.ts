@@ -13,7 +13,11 @@
 import { v } from 'convex/values';
 import { mutation, query, internalMutation } from './_generated/server';
 import { requireWorkspaceAdmin, requireAuth } from './lib/access_control';
-import { generateVerificationToken } from './lib/tokens';
+import {
+  generateVerificationToken,
+  MAX_COLLISION_RETRIES,
+  TokenCollisionError,
+} from './lib/tokens';
 
 /**
  * Normalize domain to lowercase, strip www prefix
@@ -73,11 +77,29 @@ export const addDomain = mutation({
 
     const userId = await requireAuth(ctx);
 
+    // Generate unique verification token with collision retry
+    let verificationToken: string | null = null;
+    for (let attempt = 0; attempt < MAX_COLLISION_RETRIES; attempt++) {
+      const candidate = generateVerificationToken();
+      const existing = await ctx.db
+        .query('domains')
+        .withIndex('by_verification_token', (q) => q.eq('verificationToken', candidate))
+        .first();
+      if (!existing) {
+        verificationToken = candidate;
+        break;
+      }
+    }
+
+    if (!verificationToken) {
+      throw new TokenCollisionError('verification token');
+    }
+
     // Create pending domain record
     const domainId = await ctx.db.insert('domains', {
       workspaceId: args.workspaceId,
       domain,
-      verificationToken: generateVerificationToken(),
+      verificationToken,
       status: 'pending',
       createdAt: Date.now(),
       createdBy: userId,
