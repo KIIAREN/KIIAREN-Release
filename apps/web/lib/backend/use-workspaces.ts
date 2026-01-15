@@ -651,3 +651,49 @@ export function useRegenerateJoinCode() {
 
   return { mutate, isPending };
 }
+
+
+/**
+ * Generate a new join code for a workspace.
+ *
+ * Invalidates the old join code and creates a new one (admin only).
+ * 
+ * @deprecated Use `useRegenerateJoinCode` instead. This is kept for backward compatibility.
+ */
+export function useNewJoinCode() {
+  const { mutate: regenerateJoinCode, isPending } = useRegenerateJoinCode();
+
+  return {
+    mutate: async (
+      values: { workspaceId: Id<'workspaces'> },
+      options?: {
+        onSuccess?: (data: Id<'workspaces'> | null) => void;
+        onError?: (error: Error) => void;
+        onSettled?: () => void;
+        throwError?: boolean;
+      }
+    ) => {
+      try {
+        await regenerateJoinCode(
+          { workspaceId: values.workspaceId },
+          {
+            onSuccess: () => options?.onSuccess?.(values.workspaceId),
+            onError: options?.onError,
+            onSettled: options?.onSettled,
+          }
+        );
+        return values.workspaceId;
+      } catch (error) {
+        options?.onError?.(error as Error);
+        if (options?.throwError !== false) throw error;
+        return null;
+      }
+    },
+    data: null as Id<'workspaces'> | null,
+    error: null as Error | null,
+    isPending,
+    isSuccess: false,
+    isError: false,
+    isSettled: !isPending,
+  };
+}
